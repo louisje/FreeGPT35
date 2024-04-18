@@ -100,8 +100,8 @@ async function getNewSessionId() {
   oaiDeviceId = newDeviceId;
   token = response.data.token;
 
-  // console.log("New Token:", token);
-  // console.log("New Device ID:", oaiDeviceId);
+  console.log("New Token:", token);
+  console.log("New Device ID:", oaiDeviceId);
 }
 
 // Middleware to enable CORS and handle pre-flight requests
@@ -113,6 +113,20 @@ function enableCORS(req, res, next) {
     return res.status(200).end();
   }
   next();
+}
+
+async function handleModelList(req, res) {
+  return res.json({
+		"object": "list",
+		"data": [
+			{
+				"id": "gpt-3.5-turbo",
+				"object": "model",
+				"created": 1686935002,
+				"owned_by": "openai"
+			},
+		],
+	});
 }
 
 // Middleware to handle chat completions
@@ -270,6 +284,7 @@ app.use(enableCORS);
 
 // Route to handle POST requests for chat completions
 app.post("/v1/chat/completions", handleChatCompletion);
+app.get("/v1/models", handleModelList);
 
 // 404 handler for unmatched routes
 app.use((req, res) =>
